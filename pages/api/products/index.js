@@ -1,9 +1,12 @@
+import useSWR from "swr";
 import dbConnect from "../../../db/connect";
 import Product from "../../../db/models/Product";
+
 
 export default async function handler(request, response) {
   await dbConnect();
 
+    
   if (request.method === "GET") {
     const products = await Product.find();
     return response.status(200).json(products);
@@ -14,8 +17,7 @@ export default async function handler(request, response) {
       const productData = request.body;
       const newProduct = await Product.create(productData);
 
-      const { mutate } = useSWR("/api/products");
-      await mutate();
+   
       return response.status(201).json({ status: "Product created." });
     } catch (error) {
       console.error(error);
